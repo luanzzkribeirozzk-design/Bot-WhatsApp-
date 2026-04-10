@@ -1,0 +1,48 @@
+name: 🚀 Deploy YGLN System
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Instalar dependências
+        run: npm install
+
+      - name: 🧪 Verificar estrutura
+        run: |
+          echo "✅ Verificando arquivos..."
+          ls -la
+          ls -la bot/
+          ls -la frontend/
+          echo "✅ Estrutura OK!"
+
+      - name: 🚀 Deploy para Railway (ou outro serviço)
+        if: ${{ secrets.DEPLOY_HOOK != '' }}
+        run: |
+          curl -X POST ${{ secrets.DEPLOY_HOOK }}
+          echo "✅ Deploy disparado!"
+
+      - name: 📤 Upload artefato final
+        uses: actions/upload-artifact@v4
+        with:
+          name: ygln-system-build
+          path: |
+            .
+            !node_modules
+            !.git
+            !auth_info
+          retention-days: 30

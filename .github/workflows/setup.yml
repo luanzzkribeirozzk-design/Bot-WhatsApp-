@@ -1,0 +1,23 @@
+name: 🚀 YGLN System — Setup Completo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Instalar dependências
+        run: npm install
+
+      - name: ✅ Verificar instalação
+        run: |
+          echo "✅ Dependências instaladas!"
+          ls node_modules | grep -E "baileys|generative|express|socket|qrcode|pino"
