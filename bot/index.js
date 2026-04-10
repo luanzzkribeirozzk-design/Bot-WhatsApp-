@@ -1274,14 +1274,19 @@ async function connectToWhatsApp(phoneNumber) {
     if (!pairingRequested && !sock.authState.creds.registered) {
       pairingRequested = true;
       try {
-        const cleanPhone = phoneNumber.replace(/\D/g, '');
-        await new Promise(r => setTimeout(r, 2000));
+        let cleanPhone = phoneNumber.replace(/\D/g, '');
+        if (cleanPhone.startsWith('55') && cleanPhone.length === 12) {
+          cleanPhone = '55' + cleanPhone.slice(2,4) + '9' + cleanPhone.slice(4);
+        }
+        log('Numero formatado: ' + cleanPhone);
+        await new Promise(r => setTimeout(r, 3000));
         const code = await sock.requestPairingCode(cleanPhone);
-        io.emit('pair-code', code);
-        log(`🔢 Código de pareamento gerado: ${code}`);
+        const formatted = code.match(/.{1,4}/g).join('-');
+        io.emit('pair-code', formatted);
+        log('Codigo gerado: ' + formatted);
       } catch (err) {
-        log(`Erro ao gerar código: ${err.message}`);
-        io.emit('pair-error', 'Erro ao gerar código. Verifique o número e tente novamente.');
+        log('Erro ao gerar codigo: ' + err.message);
+        io.emit('pair-error', 'Erro: ' + err.message);
       }
     }
 
