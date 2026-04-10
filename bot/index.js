@@ -14,7 +14,7 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'AIzaSyAe1dSdVzJ1785tNt4-OOmg7Lq4-q06YXs');
 const geminiModel = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
